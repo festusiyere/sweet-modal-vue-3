@@ -90,7 +90,9 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, reactive, ref, computed, useSlots } from 'vue'
+// TODO useSlot() throwing some weird error
+// import { onBeforeUnmount, onMounted, reactive, ref, computed, useSlots } from 'vue'
+import { onBeforeUnmount, onMounted, reactive, ref, computed } from 'vue'
 
 const props = defineProps({
     title: {
@@ -150,7 +152,9 @@ const props = defineProps({
 
 const emit = defineEmits(['open', 'close'])
 
-const slot = useSlots()
+// TODO useSlot() throwing some weird error
+// const slot = useSlots()
+const slot = []
 
 const visible = ref(false)
 const is_open = ref(false)
@@ -236,7 +240,9 @@ const modal_style = computed(() => {
 })
 
 onMounted(() => {
-    tabs.value = slot.default().filter(c => c.type.name && c.type.name == 'tab')
+    // TODO useSlot() throwing some weird error
+    // tabs.value = slot.default().filter(c => c.type.name && c.type.name == 'tab')
+    tabs.value = []
 
     if (has_tabs.value) {
         currentTab.value = _changeTab(tabs.value[0])
