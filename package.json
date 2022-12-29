@@ -14,6 +14,7 @@
     },
     "keywords": [
         "sweetmodal",
+        "sweet-modal",
         "modal",
         "vue",
         "vite",
@@ -35,7 +36,7 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "vite-plugin-css-injected-by-js": "^1.2.1",
+        "vite-plugin-css-injected-by-js": "^1.5.1",
         "vue": "^3.2.25"
     },
     "devDependencies": {
