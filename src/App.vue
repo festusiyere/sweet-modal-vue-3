@@ -1,12 +1,14 @@
 <template>
     <div>
         <button @click="modal.open()">Open modal</button>
-        <sweet-modal overlay-theme="dark" class="cw-modal" ref="modal" :title="'Hello just'"></sweet-modal>
+        <!-- <sweet-modal overlay-theme="dark" class="cw-modal" ref="modal" :title="'Hello just'"></sweet-modal> -->
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+// import SweetModal from '@/components/SweetModal.vue'
+// import { SweetModal } from '@/sweet-modal-vue-3'
 
 const modal = ref(null)
 </script>

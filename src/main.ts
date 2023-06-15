@@ -1,9 +1,11 @@
 import { createApp } from 'vue'
+import SweetModal from './sweet-modal-vue-3'
 import App from './App.vue'
-import GlobalComponents from './index'
+
+// createApp(App).mount('#app')
 
 const app = createApp(App)
 
-app.use(GlobalComponents)
+app.use(SweetModal)
 
 app.mount('#app')
