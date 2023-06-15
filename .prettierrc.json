@@ -4,7 +4,6 @@
     "htmlWhitespaceSensitivity": "ignore",
     "insertPragma": false,
     "bracketSameLine": false,
-    "vetur.format.defaultFormatter.html": "prettier",
     "jsxSingleQuote": false,
     "printWidth": 210,
     "proseWrap": "preserve",

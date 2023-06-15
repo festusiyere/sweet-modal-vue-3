@@ -18,7 +18,7 @@
                 <!-- Tabs but no title -->
                 <template v-if="has_tabs && !has_title">
                     <ul class="sweet-modal-tabs">
-                        <li v-for="tab in tabs" :class="_getClassesForTab(tab)">
+                        <li v-for="tab in tabs" :class="_getClassesForTab(tab)" :key="tab.props.title">
                             <a href="#" v-on:click.prevent="_changeTab(tab)">
                                 <div class="sweet-modal-valign">
                                     <span v-if="tab.props.icon" v-html="tab.props.icon" class="sweet-modal-tab-icon" />
@@ -38,7 +38,7 @@
 
             <!-- Tabs: If title AND tabs are present -->
             <ul class="sweet-modal-tabs" v-if="has_title && has_tabs">
-                <li v-for="tab in tabs" :class="_getClassesForTab(tab)">
+                <li v-for="tab in tabs" :class="_getClassesForTab(tab)" :key="tab.props.title">
                     <a href="#" v-on:click.prevent="_changeTab(tab)">
                         <div class="sweet-modal-valign">
                             <span v-if="tab.props.icon" v-html="tab.props.icon" class="sweet-modal-tab-icon" />
@@ -90,7 +90,9 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, reactive, ref, computed, useSlots } from 'vue'
+// TODO useSlot() throwing some weird error
+// import { onBeforeUnmount, onMounted, reactive, ref, computed, useSlots } from 'vue'
+import { onBeforeUnmount, onMounted, reactive, ref, computed } from 'vue'
 
 const props = defineProps({
     title: {
@@ -150,7 +152,9 @@ const props = defineProps({
 
 const emit = defineEmits(['open', 'close'])
 
-const slot = useSlots()
+// TODO useSlot() throwing some weird error
+// const slot = useSlots()
+const slot = []
 
 const visible = ref(false)
 const is_open = ref(false)
@@ -184,9 +188,9 @@ const has_content = computed(() => {
     return slot['default']
 })
 
-const current_tab = computed(() => {
-    return tabs.value.filter(t => t.active === true)[0]
-})
+// const current_tab = computed(() => {
+//     return tabs.value.filter(t => t.active === true)[0]
+// })
 
 const overlay_classes = computed(() => {
     return [
@@ -236,7 +240,9 @@ const modal_style = computed(() => {
 })
 
 onMounted(() => {
-    tabs.value = slot.default().filter(c => c.type.name && c.type.name == 'tab')
+    // TODO useSlot() throwing some weird error
+    // tabs.value = slot.default().filter(c => c.type.name && c.type.name == 'tab')
+    tabs.value = []
 
     if (has_tabs.value) {
         currentTab.value = _changeTab(tabs.value[0])
