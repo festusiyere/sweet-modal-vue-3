@@ -1,11 +1,13 @@
 <template>
-    <div :class="['sweet-modal-tab', { active }]">
+    <div :class="['sweet-modal-tab', { isActive }]">
         <slot></slot>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+
+defineEmits(['mounted'])
 
 defineProps({
     title: {
@@ -30,8 +32,7 @@ defineProps({
         default: false
     }
 })
-const active = ref(false)
-defineExpose(['active'])
+const isActive = ref(false)
 </script>
 
 <script>

@@ -91,8 +91,11 @@
 
 <script setup>
 // TODO useSlot() throwing some weird error
-// import { onBeforeUnmount, onMounted, reactive, ref, computed, useSlots } from 'vue'
-import { onBeforeUnmount, onMounted, reactive, ref, computed } from 'vue'
+import { onBeforeUnmount, onMounted, reactive, ref, computed, useSlots } from 'vue'
+
+defineOptions({
+    name: 'SweetModal'
+})
 
 const props = defineProps({
     title: {
@@ -152,15 +155,16 @@ const props = defineProps({
 
 const emit = defineEmits(['open', 'close'])
 
-// TODO useSlot() throwing some weird error
-// const slot = useSlots()
-const slot = []
+// TODO s() throwing some weird error
+const slot = useSlots()
+// const slot = []
 
 const visible = ref(false)
 const is_open = ref(false)
 const is_bouncing = ref(false)
 const currentTab = ref(null)
 const tabs = ref([])
+const sweetModalTab = ref(null)
 
 // Document refs
 const icon_success = ref(null)
@@ -239,23 +243,6 @@ const modal_style = computed(() => {
     }
 })
 
-onMounted(() => {
-    // TODO useSlot() throwing some weird error
-    // tabs.value = slot.default().filter(c => c.type.name && c.type.name == 'tab')
-    tabs.value = []
-
-    if (has_tabs.value) {
-        currentTab.value = _changeTab(tabs.value[0])
-    }
-
-    document.addEventListener('keyup', _onDocumentKeyup)
-})
-
-onBeforeUnmount(() => {
-    _unlockBody()
-    document.removeEventListener('keyup', _onDocumentKeyup)
-})
-
 /**
  * Open the dialog
  * Emits an event 'open'
@@ -265,7 +252,7 @@ onBeforeUnmount(() => {
 const open = (tabId = null) => {
     if (tabId && has_tabs.value) {
         // Find tab with wanted id.
-        let openingTabs = tabs.value.filter(tab => {
+        let openingTabs = tabs.value.filter((tab) => {
             return tab.id === tabId
         })
         if (openingTabs.length > 0) {
@@ -326,7 +313,7 @@ const _unlockBody = () => {
     document.body.style.overflow = backups.body.overflow
 }
 
-const _onOverlayClick = event => {
+const _onOverlayClick = (event) => {
     if (!event.target.classList || event.target.classList.contains('sweet-modal-clickable')) {
         if (props.blocking) {
             if (props.pulseOnBlock) bounce()
@@ -336,7 +323,7 @@ const _onOverlayClick = event => {
     }
 }
 
-const _onDocumentKeyup = event => {
+const _onDocumentKeyup = (event) => {
     if (event.keyCode == 27) {
         if (props.blocking) {
             if (props.pulseOnBlock) bounce()
@@ -346,12 +333,12 @@ const _onDocumentKeyup = event => {
     }
 }
 
-const _changeTab = tab => {
-    tabs.value.map(t => (t.active = t == tab))
+const _changeTab = (tab) => {
+    tabs.value.map((t) => (t.isActive = t == tab))
     currentTab.value = tab
 }
 
-const _getClassesForTab = tab => {
+const _getClassesForTab = (tab) => {
     return [
         'sweet-modal-tab',
 
@@ -428,16 +415,30 @@ const _applyClasses = ($ref, classMap) => {
     }
 }
 
+onMounted(() => {
+    console.log(sweetModalTab.value)
+
+    // TODO: cannot change isActive from _changeTab method.
+    // tabs.value = slot.default().filter(c => c.type.name && c.type.name == 'tab')
+    tabs.value = []
+    // console.log(slot.default())
+
+    if (has_tabs.value) {
+        currentTab.value = _changeTab(tabs.value[0])
+    }
+
+    document.addEventListener('keyup', _onDocumentKeyup)
+})
+
+onBeforeUnmount(() => {
+    _unlockBody()
+    document.removeEventListener('keyup', _onDocumentKeyup)
+})
+
 defineExpose({
     close,
     open
 })
-</script>
-
-<script>
-export default {
-    name: 'SweetModal'
-}
 </script>
 
 <style lang="scss">
@@ -455,26 +456,32 @@ export default {
     z-index: 9001;
     font-size: 14px;
     -webkit-font-smoothing: antialiased;
-    // Theming
-    background: rgba(#fff, 0.9);
-    &.theme-dark {
-        $color: color(dark-overlay);
-        // background: radial-gradient(ellipse at center, rgba($color, 0.9) 0%, rgba($color, 0.96) 100%);
-        background: rgba($color, 0.94);
-    }
+
     // Animation
     opacity: 0;
     transition: opacity 0.3s;
     transform: translate3D(0, 0, 0);
     -webkit-perspective: 500px;
+
+    // Theming
+    background: rgba(#fff, 0.9);
+
     &.is-visible {
         opacity: 1;
+    }
+
+    &.theme-dark {
+        $color: color(dark-overlay);
+        // background: radial-gradient(ellipse at center, rgba($color, 0.9) 0%, rgba($color, 0.96) 100%);
+        background: rgba($color, 0.94);
     }
 }
 .sweet-modal {
     @include border-box;
     background: #fff;
-    box-shadow: 0px 8px 46px rgba(#000, 0.08), 0px 2px 6px rgba(#000, 0.03);
+    box-shadow:
+        0px 8px 46px rgba(#000, 0.08),
+        0px 2px 6px rgba(#000, 0.03);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -484,6 +491,17 @@ export default {
     max-height: 100vh;
     overflow-y: auto;
     border-radius: 2px;
+
+    // Animation
+    transform: scale(0.9) translate(calc(-50% - 32px), -50%);
+    opacity: 0;
+    transition: {
+        property: transform, opacity;
+        duration: 0.3s;
+        delay: 0.05s;
+        timing-function: cubic-bezier(0.52, 0.02, 0.19, 1.02);
+    }
+
     .sweet-box-actions {
         position: absolute;
         top: 12px;
@@ -711,15 +729,6 @@ export default {
             border-top-color: lighten($color, 8%);
             box-shadow: 0px -1px 0px darken($color, 8%);
         }
-    }
-    // Animation
-    transform: scale(0.9) translate(calc(-50% - 32px), -50%);
-    opacity: 0;
-    transition: {
-        property: transform, opacity;
-        duration: 0.3s;
-        delay: 0.05s;
-        timing-function: cubic-bezier(0.52, 0.02, 0.19, 1.02);
     }
     .sweet-buttons,
     .sweet-content {

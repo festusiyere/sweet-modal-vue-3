@@ -1,77 +1,45 @@
-# SweetModal
+# vue-project
 
-This library is a fork from [vue sweet modal](https://github.com/visma-meglerfront/sweet-modal-vue) for Vue 3 and Nuxt 3
+This template should help get you started developing with Vue 3 in Vite.
 
-## Usage
+## Recommended IDE Setup
 
-Install SweetModal for Vue.js through npm:
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-```
-npm install sweet-modal-vue-3
-```
+## Type Support for `.vue` Imports in TS
 
-Install SweetModal for Vue.js through yarn:
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
 
-```
-yarn add sweet-modal-vue-3
-```
+## Customize configuration
 
-## Usage/Examples
+See [Vite Configuration Reference](https://vitejs.dev/config/).
 
-### Use Globally
+## Project Setup
 
-```javascript
-import SweetModal from 'sweet-modal-vue-3';
-import App from './App.vue';
-
-const app = createApp(App);
-
-app.use(SweetModal);
-app.mount('#app');
+```sh
+npm install
 ```
 
+### Compile and Hot-Reload for Development
 
-
-### Use per Component
-
-```javascript
-import { SweetModal, SweetModalTab } from 'sweet-modal-vue-3'
-
-{
-	components: {
-		SweetModal,
-		SweetModalTab
-	}
-
-	...
-}
+```sh
+npm run dev
 ```
 
-## Browser Compatibility
+### Type-Check, Compile and Minify for Production
 
-SweetModal should work in most major browsers:
+```sh
+npm run build
+```
 
-- Safari 9+
-- Firefox 20+
-- Chrome 20+
-- Opera 15+
-- Microsoft Edge
+### Run Unit Tests with [Vitest](https://vitest.dev/)
 
+```sh
+npm run test:unit
+```
 
- ## Contribution
+### Lint with [ESLint](https://eslint.org/)
 
-1. Fork the repository
-2. Run `yarn`
-3. Run `yarn dev` and start hacking. You can reach the example site at `http://localhost:7777`.
-4. When you're done, run one final `yarn build` command and commit your work for a pull request.
-
-### Guidelines
-
-- tabs for indentation, 1 tab = 4 spaces
-- camelCase method names
-- \_camelCase for private methods
-- snake_case computed properties
-- snake_case data
-- kebab-case attributes
-- arrow functions if possible
-- be fully ES6 compliant!
+```sh
+npm run lint
+```

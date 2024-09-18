@@ -1,43 +1,24 @@
 import { fileURLToPath, URL } from 'node:url'
-
+import path from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-
-import typescript2 from 'rollup-plugin-typescript2'
+import vueDevTools from 'vite-plugin-vue-devtools'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [
-        vue(),
-        cssInjectedByJsPlugin(),
-        typescript2({
-            check: false,
-            include: ['src/components/*.vue'],
-            tsconfigOverride: {
-                compilerOptions: {
-                    sourceMap: true,
-                    declaration: true,
-                    declarationMap: true
-                },
-                exclude: ['vite.config.ts']
-            }
-        })
-    ],
-
+    plugins: [vue(), vueDevTools(), cssInjectedByJsPlugin()],
     build: {
-        cssCodeSplit: false,
+        cssCodeSplit: true,
+        target: 'esnext',
         lib: {
-            entry: './src/sweet-modal-vue-3.ts',
-            formats: ['es', 'cjs'],
+            entry: path.resolve(__dirname, 'src/sweet-modal-vue-3.ts'),
             name: 'sweet-modal-vue-3',
-            fileName: (format: string) => (format === 'es' ? 'sweet-modal-vue-3.js' : 'sweet-modal-vue-3.cjs')
+            fileName: (format: string) => `sweet-modal-vue.${format}.js`
         },
         rollupOptions: {
             external: ['vue'],
             output: {
-                exports: 'named',
-                preserveModules: true,
                 globals: {
                     vue: 'Vue'
                 }
