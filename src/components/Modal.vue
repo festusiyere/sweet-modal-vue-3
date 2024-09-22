@@ -16,7 +16,7 @@
             <!-- Title: Housing the title and tabs, if no title is present -->
             <div class="sweet-title" v-if="has_title || has_tabs">
                 <!-- Tabs but no title -->
-                <template v-if="has_tabs && !has_title">
+                <!-- <template v-if="has_tabs && !has_title">
                     <ul class="sweet-modal-tabs">
                         <li v-for="tab in tabs" :class="_getClassesForTab(tab)" :key="tab.props.title">
                             <a href="#" v-on:click.prevent="_changeTab(tab)">
@@ -27,7 +27,7 @@
                             </a>
                         </li>
                     </ul>
-                </template>
+                </template> -->
 
                 <!-- Title -->
                 <template v-if="has_title">
@@ -37,7 +37,7 @@
             </div>
 
             <!-- Tabs: If title AND tabs are present -->
-            <ul class="sweet-modal-tabs" v-if="has_title && has_tabs">
+            <!-- <ul class="sweet-modal-tabs" v-if="has_title && has_tabs">
                 <li v-for="tab in tabs" :class="_getClassesForTab(tab)" :key="tab.props.title">
                     <a href="#" v-on:click.prevent="_changeTab(tab)">
                         <div class="sweet-modal-valign">
@@ -46,7 +46,7 @@
                         </div>
                     </a>
                 </li>
-            </ul>
+            </ul> -->
 
             <!-- Content: Wrapper -->
             <div class="sweet-content" ref="content">
@@ -89,10 +89,13 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // TODO useSlot() throwing some weird error
-// import { onBeforeUnmount, onMounted, reactive, ref, computed, useSlots } from 'vue'
-import { onBeforeUnmount, onMounted, reactive, ref, computed } from 'vue'
+import { onBeforeUnmount, onMounted, reactive, ref, computed, useSlots } from 'vue'
+
+defineOptions({
+    name: 'SweetModal'
+})
 
 const props = defineProps({
     title: {
@@ -152,15 +155,16 @@ const props = defineProps({
 
 const emit = defineEmits(['open', 'close'])
 
-// TODO useSlot() throwing some weird error
-// const slot = useSlots()
-const slot = []
+// TODO s() throwing some weird error
+const slot = useSlots()
+// const slot = []
 
 const visible = ref(false)
 const is_open = ref(false)
 const is_bouncing = ref(false)
 const currentTab = ref(null)
 const tabs = ref([])
+const sweetModalTab = ref(null)
 
 // Document refs
 const icon_success = ref(null)
@@ -171,8 +175,8 @@ const content = ref(null)
 
 const backups = reactive({
     body: {
-        height: null,
-        overflow: null
+        height: null as string | null,
+        overflow: null as string | null
     }
 })
 
@@ -221,7 +225,7 @@ const modal_classes = computed(() => {
     ]
 })
 
-const modal_style = computed(() => {
+const modal_style = computed<any>(() => {
     let width = props.width
     let maxWidth = null
 
@@ -239,23 +243,6 @@ const modal_style = computed(() => {
     }
 })
 
-onMounted(() => {
-    // TODO useSlot() throwing some weird error
-    // tabs.value = slot.default().filter(c => c.type.name && c.type.name == 'tab')
-    tabs.value = []
-
-    if (has_tabs.value) {
-        currentTab.value = _changeTab(tabs.value[0])
-    }
-
-    document.addEventListener('keyup', _onDocumentKeyup)
-})
-
-onBeforeUnmount(() => {
-    _unlockBody()
-    document.removeEventListener('keyup', _onDocumentKeyup)
-})
-
 /**
  * Open the dialog
  * Emits an event 'open'
@@ -266,16 +253,16 @@ const open = (tabId = null) => {
     if (tabId && has_tabs.value) {
         // Find tab with wanted id.
         let openingTabs = tabs.value.filter(tab => {
-            return tab.id === tabId
+            return (tab as any).id === tabId
         })
         if (openingTabs.length > 0) {
             // Set current tab to first match.
-            currentTab.value = _changeTab(openingTabs[0])
+            currentTab.value = _changeTab(openingTabs[0]) as any
         } else {
             // Try opening index instead of id as an alternative.
             let openingTab = tabs[tabId]
             if (openingTab) {
-                currentTab.value = _changeTab(openingTab)
+                currentTab.value = _changeTab(openingTab) as any
             }
         }
     }
@@ -322,12 +309,12 @@ const _lockBody = () => {
 }
 
 const _unlockBody = () => {
-    document.body.style.height = backups.body.height
-    document.body.style.overflow = backups.body.overflow
+    document.body.style.height = backups.body.height as string
+    document.body.style.overflow = backups.body.overflow as string
 }
 
-const _onOverlayClick = event => {
-    if (!event.target.classList || event.target.classList.contains('sweet-modal-clickable')) {
+const _onOverlayClick = (event: MouseEvent) => {
+    if (!(event.target as HTMLElement).classList || (event.target as HTMLElement).classList.contains('sweet-modal-clickable')) {
         if (props.blocking) {
             if (props.pulseOnBlock) bounce()
         } else {
@@ -336,7 +323,7 @@ const _onOverlayClick = event => {
     }
 }
 
-const _onDocumentKeyup = event => {
+const _onDocumentKeyup = (event: KeyboardEvent) => {
     if (event.keyCode == 27) {
         if (props.blocking) {
             if (props.pulseOnBlock) bounce()
@@ -346,12 +333,12 @@ const _onDocumentKeyup = event => {
     }
 }
 
-const _changeTab = tab => {
-    tabs.value.map(t => (t.active = t == tab))
+const _changeTab = (tab: any) => {
+    tabs.value.map((t: any) => (t.isActive = t == tab))
     currentTab.value = tab
 }
 
-const _getClassesForTab = tab => {
+const _getClassesForTab = (tab: any) => {
     return [
         'sweet-modal-tab',
 
@@ -412,7 +399,7 @@ const _animateIcon = () => {
  * @param DOMNode $ref     Element to apply classes to or children of that element
  * @param Object  classMap Class Map which elements get which classes (see doc)
  */
-const _applyClasses = ($ref, classMap) => {
+const _applyClasses = ($ref: any, classMap: any) => {
     for (let cl in classMap) {
         let classes = classMap[cl]
         let $el
@@ -428,19 +415,31 @@ const _applyClasses = ($ref, classMap) => {
     }
 }
 
+onMounted(() => {
+    // TODO: cannot change isActive from _changeTab method.
+    // tabs.value = slot.default().filter(c => c.type.name && c.type.name == 'tab')
+    tabs.value = []
+
+    if (has_tabs.value) {
+        currentTab.value = _changeTab(tabs.value[0]) as any
+    }
+
+    document.addEventListener('keyup', _onDocumentKeyup)
+})
+
+onBeforeUnmount(() => {
+    _unlockBody()
+    document.removeEventListener('keyup', _onDocumentKeyup)
+})
+
 defineExpose({
     close,
     open
 })
 </script>
 
-<script>
-export default {
-    name: 'SweetModal'
-}
-</script>
-
 <style lang="scss">
+@use 'sass:color';
 @import './../styles/mixins';
 @import './../styles/colors';
 @import './../styles/animations';
@@ -455,20 +454,24 @@ export default {
     z-index: 9001;
     font-size: 14px;
     -webkit-font-smoothing: antialiased;
-    // Theming
-    background: rgba(#fff, 0.9);
-    &.theme-dark {
-        $color: color(dark-overlay);
-        // background: radial-gradient(ellipse at center, rgba($color, 0.9) 0%, rgba($color, 0.96) 100%);
-        background: rgba($color, 0.94);
-    }
+
     // Animation
     opacity: 0;
     transition: opacity 0.3s;
     transform: translate3D(0, 0, 0);
     -webkit-perspective: 500px;
+
+    // Theming
+    background: rgba(#fff, 0.9);
+
     &.is-visible {
         opacity: 1;
+    }
+
+    &.theme-dark {
+        $color: color(dark-overlay);
+        // background: radial-gradient(ellipse at center, rgba($color, 0.9) 0%, rgba($color, 0.96) 100%);
+        background: rgba($color, 0.94);
     }
 }
 .sweet-modal {
@@ -484,6 +487,17 @@ export default {
     max-height: 100vh;
     overflow-y: auto;
     border-radius: 2px;
+
+    // Animation
+    transform: scale(0.9) translate(calc(-50% - 32px), -50%);
+    opacity: 0;
+    transition: {
+        property: transform, opacity;
+        duration: 0.3s;
+        delay: 0.05s;
+        timing-function: cubic-bezier(0.52, 0.02, 0.19, 1.02);
+    }
+
     .sweet-box-actions {
         position: absolute;
         top: 12px;
@@ -687,8 +701,8 @@ export default {
             }
         }
         .sweet-title {
-            border-bottom-color: darken($color, 8%);
-            box-shadow: 0px 1px 0px lighten($color, 8%);
+            border-bottom-color: color.adjust($color, $lightness: 8%);
+            box-shadow: 0px 1px 0px color.adjust($color, $lightness: 8%);
         }
         ul.sweet-modal-tabs li {
             a {
@@ -698,28 +712,19 @@ export default {
                 color: color(blue);
             }
             &.disabled a {
-                color: lighten($color, 20%);
+                color: color.adjust($color, $lightness: -8%);
             }
         }
         &.has-tabs.has-title {
             ul.sweet-modal-tabs {
-                border-bottom-color: darken($color, 8%);
-                box-shadow: 0px 1px 0px lighten($color, 8%);
+                border-bottom-color: color.adjust($color, $lightness: 8%);
+                box-shadow: 0px 1px 0px color.adjust($color, $lightness: 8%);
             }
         }
         .sweet-content + .sweet-buttons {
-            border-top-color: lighten($color, 8%);
-            box-shadow: 0px -1px 0px darken($color, 8%);
+            border-top-color: color.adjust($color, $lightness: 8%);
+            box-shadow: 0px -1px 0px color.adjust($color, $lightness: 8%);
         }
-    }
-    // Animation
-    transform: scale(0.9) translate(calc(-50% - 32px), -50%);
-    opacity: 0;
-    transition: {
-        property: transform, opacity;
-        duration: 0.3s;
-        delay: 0.05s;
-        timing-function: cubic-bezier(0.52, 0.02, 0.19, 1.02);
     }
     .sweet-buttons,
     .sweet-content {

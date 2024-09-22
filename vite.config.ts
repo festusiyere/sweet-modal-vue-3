@@ -1,52 +1,33 @@
-import { fileURLToPath, URL } from 'node:url'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import path from 'path';
 
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 
-import typescript2 from 'rollup-plugin-typescript2'
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
-
-// https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [
-        vue(),
-        cssInjectedByJsPlugin(),
-        typescript2({
-            check: false,
-            include: ['src/components/*.vue'],
-            tsconfigOverride: {
-                compilerOptions: {
-                    sourceMap: true,
-                    declaration: true,
-                    declarationMap: true
-                },
-                exclude: ['vite.config.ts']
-            }
-        })
-    ],
+	plugins: [vue(), cssInjectedByJsPlugin()],
+	resolve: {
+		alias: {
+			'@/': new URL('./src/', import.meta.url).pathname,
+		},
+	},
 
-    build: {
-        cssCodeSplit: false,
-        lib: {
-            entry: './src/sweet-modal-vue-3.ts',
-            formats: ['es', 'cjs'],
-            name: 'sweet-modal-vue-3',
-            fileName: (format: string) => (format === 'es' ? 'sweet-modal-vue-3.js' : 'sweet-modal-vue-3.cjs')
-        },
-        rollupOptions: {
-            external: ['vue'],
-            output: {
-                exports: 'named',
-                preserveModules: true,
-                globals: {
-                    vue: 'Vue'
-                }
-            }
-        }
-    },
-    resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
-        }
-    }
-})
+	build: {
+		cssCodeSplit: true,
+		target: 'esnext',
+		lib: {
+			entry: path.resolve(__dirname, 'src/index.ts'),
+			name: 'SweetModalVue3',
+			fileName: (format) => `sweet-modal-vue-3.${format}.js`,
+		},
+
+		rollupOptions: {
+			external: ['vue'],
+			output: {
+				globals: {
+					vue: 'Vue',
+				},
+			},
+		},
+	},
+});
