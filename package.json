@@ -10,7 +10,7 @@
         "url": "git+https://github.com/festusiyere/sweet-modal-vue-3.git"
     },
     "publishConfig": {
-        "registry": "https://npm.pkg.github.com/@peshanghiwa"
+        "registry": "https://npm.pkg.github.com/@festusiyere"
     },
     "type": "module",
     "keywords": [
