@@ -93,9 +93,10 @@
 // TODO useSlot() throwing some weird error
 import { onBeforeUnmount, onMounted, reactive, ref, computed, useSlots } from 'vue'
 
-defineOptions({
-    name: 'SweetModal'
-})
+// Not supported for all vue versions yet
+// defineOptions({
+//     name: 'SweetModal'
+// })
 
 const props = defineProps({
     title: {
