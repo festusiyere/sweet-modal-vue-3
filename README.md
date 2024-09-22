@@ -1,45 +1,88 @@
-# vue-project
+# SweetModal
 
-This template should help get you started developing with Vue 3 in Vite.
+This library is a fork from [vue sweet modal](https://github.com/visma-meglerfront/sweet-modal-vue) for Vue 3 and Nuxt 3
 
-## Recommended IDE Setup
+## Usage
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Install SweetModal for Vue.js through npm:
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+```
+npm install sweet-modal-vue-3
 ```
 
-### Compile and Hot-Reload for Development
+Install SweetModal for Vue.js through yarn:
 
-```sh
-npm run dev
+```
+yarn add sweet-modal-vue-3
 ```
 
-### Type-Check, Compile and Minify for Production
+## Usage/Examples
 
-```sh
-npm run build
+### Use Globally
+
+```javascript
+import { createApp } from 'vue'
+
+const app = createApp({});
+
+app.component(SweetModal);
+app.mount('#app');
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+or
 
-```sh
-npm run test:unit
+```javascript
+import SweetModal from 'sweet-modal-vue-3';
+import App from './App.vue';
+
+const app = createApp(App);
+
+app.component(SweetModal);
+app.mount('#app');
 ```
 
-### Lint with [ESLint](https://eslint.org/)
 
-```sh
-npm run lint
+
+### Use per Component
+
+```javascript
+import { SweetModal, SweetModalTab } from 'sweet-modal-vue-3'
+
+{
+	components: {
+		SweetModal,
+		SweetModalTab
+	}
+
+	...
+}
 ```
+
+## Browser Compatibility
+
+SweetModal should work in most major browsers:
+
+- Safari 9+
+- Firefox 20+
+- Chrome 20+
+- Opera 15+
+- Microsoft Edge
+
+
+ ## Contribution
+
+1. Fork the repository
+2. Run `yarn`
+3. Run `yarn dev` and start hacking. You can reach the example site at `http://localhost:7777`.
+4. When you're done, run one final `yarn build` command and commit your work for a pull request.
+
+### Guidelines
+
+- tabs for indentation, 1 tab = 4 spaces
+- camelCase method names
+- \_camelCase for private methods
+- snake_case computed properties
+- snake_case data
+- kebab-case attributes
+- arrow functions if possible
+- be fully ES6 compliant!

@@ -1,29 +1,14 @@
-<template>
-    <div>
-        <button @click="modal.open()">Open modal</button>
-        <sweet-modal overlay-theme="dark" class="cw-modal" ref="modal" :title="'Hello just'">
-            <sweet-modal-tab title="Tab 1" id="tab1" ref="sweetModalTab">Contents of Tab 1</sweet-modal-tab>
-            <sweet-modal-tab title="Tab 2" id="tab2" ref="sweetModalTab">Contents of Tab 2</sweet-modal-tab>
-            <sweet-modal-tab title="Tab 3" id="tab3" ref="sweetModalTab" disabled>Tab 3 is disabled</sweet-modal-tab>
-        </sweet-modal>
-    </div>
-</template>
-
-<script setup>
+<script setup lang="ts">
+import { SweetModal } from './index'
 import { ref } from 'vue'
-import SweetModal from '@/components/SweetModal.vue'
-// import { SweetModal } from '@/sweet-modal-vue-3'
 
-const modal = ref(null)
+const modal = ref<InstanceType<typeof SweetModal>>()
+const open = () => {
+    modal.value?.open()
+}
 </script>
 
-<style>
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
-}
-</style>
+<template>
+    <button @click="open">open</button>
+    <SweetModal ref="modal">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut ex velit libero saepe placeat magni fugit! Nostrum sint natus eligendi?</SweetModal>
+</template>

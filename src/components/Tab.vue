@@ -4,8 +4,12 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
+
+defineOptions({
+    name: 'sweet-modal-tab'
+})
 
 defineEmits(['mounted'])
 
@@ -33,10 +37,4 @@ defineProps({
     }
 })
 const isActive = ref(false)
-</script>
-
-<script>
-export default {
-    name: 'tab'
-}
 </script>

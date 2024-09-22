@@ -1,33 +1,33 @@
-import { fileURLToPath, URL } from 'node:url'
-import path from 'path'
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import path from 'path';
 
-// https://vitejs.dev/config/
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
+
 export default defineConfig({
-    plugins: [vue(), vueDevTools(), cssInjectedByJsPlugin()],
-    build: {
-        cssCodeSplit: true,
-        target: 'esnext',
-        lib: {
-            entry: path.resolve(__dirname, 'src/sweet-modal-vue-3.ts'),
-            name: 'sweet-modal-vue-3',
-            fileName: (format: string) => `sweet-modal-vue.${format}.js`
-        },
-        rollupOptions: {
-            external: ['vue'],
-            output: {
-                globals: {
-                    vue: 'Vue'
-                }
-            }
-        }
-    },
-    resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
-        }
-    }
-})
+	plugins: [vue(), cssInjectedByJsPlugin()],
+	resolve: {
+		alias: {
+			'@/': new URL('./src/', import.meta.url).pathname,
+		},
+	},
+
+	build: {
+		cssCodeSplit: true,
+		target: 'esnext',
+		lib: {
+			entry: path.resolve(__dirname, 'src/index.ts'),
+			name: 'SweetModalVue3',
+			fileName: (format) => `sweet-modal-vue-3.${format}.js`,
+		},
+
+		rollupOptions: {
+			external: ['vue'],
+			output: {
+				globals: {
+					vue: 'Vue',
+				},
+			},
+		},
+	},
+});

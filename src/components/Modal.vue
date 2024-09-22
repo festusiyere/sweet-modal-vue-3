@@ -16,7 +16,7 @@
             <!-- Title: Housing the title and tabs, if no title is present -->
             <div class="sweet-title" v-if="has_title || has_tabs">
                 <!-- Tabs but no title -->
-                <template v-if="has_tabs && !has_title">
+                <!-- <template v-if="has_tabs && !has_title">
                     <ul class="sweet-modal-tabs">
                         <li v-for="tab in tabs" :class="_getClassesForTab(tab)" :key="tab.props.title">
                             <a href="#" v-on:click.prevent="_changeTab(tab)">
@@ -27,7 +27,7 @@
                             </a>
                         </li>
                     </ul>
-                </template>
+                </template> -->
 
                 <!-- Title -->
                 <template v-if="has_title">
@@ -37,7 +37,7 @@
             </div>
 
             <!-- Tabs: If title AND tabs are present -->
-            <ul class="sweet-modal-tabs" v-if="has_title && has_tabs">
+            <!-- <ul class="sweet-modal-tabs" v-if="has_title && has_tabs">
                 <li v-for="tab in tabs" :class="_getClassesForTab(tab)" :key="tab.props.title">
                     <a href="#" v-on:click.prevent="_changeTab(tab)">
                         <div class="sweet-modal-valign">
@@ -46,7 +46,7 @@
                         </div>
                     </a>
                 </li>
-            </ul>
+            </ul> -->
 
             <!-- Content: Wrapper -->
             <div class="sweet-content" ref="content">
@@ -89,7 +89,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // TODO useSlot() throwing some weird error
 import { onBeforeUnmount, onMounted, reactive, ref, computed, useSlots } from 'vue'
 
@@ -175,8 +175,8 @@ const content = ref(null)
 
 const backups = reactive({
     body: {
-        height: null,
-        overflow: null
+        height: null as string | null,
+        overflow: null as string | null
     }
 })
 
@@ -225,7 +225,7 @@ const modal_classes = computed(() => {
     ]
 })
 
-const modal_style = computed(() => {
+const modal_style = computed<any>(() => {
     let width = props.width
     let maxWidth = null
 
@@ -252,17 +252,17 @@ const modal_style = computed(() => {
 const open = (tabId = null) => {
     if (tabId && has_tabs.value) {
         // Find tab with wanted id.
-        let openingTabs = tabs.value.filter((tab) => {
-            return tab.id === tabId
+        let openingTabs = tabs.value.filter(tab => {
+            return (tab as any).id === tabId
         })
         if (openingTabs.length > 0) {
             // Set current tab to first match.
-            currentTab.value = _changeTab(openingTabs[0])
+            currentTab.value = _changeTab(openingTabs[0]) as any
         } else {
             // Try opening index instead of id as an alternative.
             let openingTab = tabs[tabId]
             if (openingTab) {
-                currentTab.value = _changeTab(openingTab)
+                currentTab.value = _changeTab(openingTab) as any
             }
         }
     }
@@ -309,12 +309,12 @@ const _lockBody = () => {
 }
 
 const _unlockBody = () => {
-    document.body.style.height = backups.body.height
-    document.body.style.overflow = backups.body.overflow
+    document.body.style.height = backups.body.height as string
+    document.body.style.overflow = backups.body.overflow as string
 }
 
-const _onOverlayClick = (event) => {
-    if (!event.target.classList || event.target.classList.contains('sweet-modal-clickable')) {
+const _onOverlayClick = (event: MouseEvent) => {
+    if (!(event.target as HTMLElement).classList || (event.target as HTMLElement).classList.contains('sweet-modal-clickable')) {
         if (props.blocking) {
             if (props.pulseOnBlock) bounce()
         } else {
@@ -323,7 +323,7 @@ const _onOverlayClick = (event) => {
     }
 }
 
-const _onDocumentKeyup = (event) => {
+const _onDocumentKeyup = (event: KeyboardEvent) => {
     if (event.keyCode == 27) {
         if (props.blocking) {
             if (props.pulseOnBlock) bounce()
@@ -333,12 +333,12 @@ const _onDocumentKeyup = (event) => {
     }
 }
 
-const _changeTab = (tab) => {
-    tabs.value.map((t) => (t.isActive = t == tab))
+const _changeTab = (tab: any) => {
+    tabs.value.map((t: any) => (t.isActive = t == tab))
     currentTab.value = tab
 }
 
-const _getClassesForTab = (tab) => {
+const _getClassesForTab = (tab: any) => {
     return [
         'sweet-modal-tab',
 
@@ -399,7 +399,7 @@ const _animateIcon = () => {
  * @param DOMNode $ref     Element to apply classes to or children of that element
  * @param Object  classMap Class Map which elements get which classes (see doc)
  */
-const _applyClasses = ($ref, classMap) => {
+const _applyClasses = ($ref: any, classMap: any) => {
     for (let cl in classMap) {
         let classes = classMap[cl]
         let $el
@@ -416,15 +416,12 @@ const _applyClasses = ($ref, classMap) => {
 }
 
 onMounted(() => {
-    console.log(sweetModalTab.value)
-
     // TODO: cannot change isActive from _changeTab method.
     // tabs.value = slot.default().filter(c => c.type.name && c.type.name == 'tab')
     tabs.value = []
-    // console.log(slot.default())
 
     if (has_tabs.value) {
-        currentTab.value = _changeTab(tabs.value[0])
+        currentTab.value = _changeTab(tabs.value[0]) as any
     }
 
     document.addEventListener('keyup', _onDocumentKeyup)
@@ -442,6 +439,7 @@ defineExpose({
 </script>
 
 <style lang="scss">
+@use 'sass:color';
 @import './../styles/mixins';
 @import './../styles/colors';
 @import './../styles/animations';
@@ -479,9 +477,7 @@ defineExpose({
 .sweet-modal {
     @include border-box;
     background: #fff;
-    box-shadow:
-        0px 8px 46px rgba(#000, 0.08),
-        0px 2px 6px rgba(#000, 0.03);
+    box-shadow: 0px 8px 46px rgba(#000, 0.08), 0px 2px 6px rgba(#000, 0.03);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -705,8 +701,8 @@ defineExpose({
             }
         }
         .sweet-title {
-            border-bottom-color: darken($color, 8%);
-            box-shadow: 0px 1px 0px lighten($color, 8%);
+            border-bottom-color: color.adjust($color, $lightness: 8%);
+            box-shadow: 0px 1px 0px color.adjust($color, $lightness: 8%);
         }
         ul.sweet-modal-tabs li {
             a {
@@ -716,18 +712,18 @@ defineExpose({
                 color: color(blue);
             }
             &.disabled a {
-                color: lighten($color, 20%);
+                color: color.adjust($color, $lightness: -8%);
             }
         }
         &.has-tabs.has-title {
             ul.sweet-modal-tabs {
-                border-bottom-color: darken($color, 8%);
-                box-shadow: 0px 1px 0px lighten($color, 8%);
+                border-bottom-color: color.adjust($color, $lightness: 8%);
+                box-shadow: 0px 1px 0px color.adjust($color, $lightness: 8%);
             }
         }
         .sweet-content + .sweet-buttons {
-            border-top-color: lighten($color, 8%);
-            box-shadow: 0px -1px 0px darken($color, 8%);
+            border-top-color: color.adjust($color, $lightness: 8%);
+            box-shadow: 0px -1px 0px color.adjust($color, $lightness: 8%);
         }
     }
     .sweet-buttons,
