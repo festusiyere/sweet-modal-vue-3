@@ -1,6 +1,6 @@
 # SweetModal
 
-This library is a fork from [vue sweet modal](https://github.com/visma-meglerfront/sweet-modal-vue) for Vue 3 and Nuxt 3
+This library is a fork from [vue sweet modal](https://github.com/visma-meglerfront/sweet-modal-vue) for Vue 3, Nuxt 3 and Nuxt 4.
 
 ## Usage
 
@@ -87,7 +87,7 @@ export default defineNuxtPlugin(nuxtApp => {
 ```
 
 ### Using SFC and TypeScript
-If you are experiencing a typescript error when using SweetModal in Nuxt 3, you can create a global type or custom type
+If you are experiencing a typescript error when using SweetModal in Nuxt 3 and Nuxt 4, you can create a global type or custom type
 
 ```typescript
   class SweetModalComponent extends Vue {
